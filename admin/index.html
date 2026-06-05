@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel Admin · Diagnóstico NEXTGEN</title>
+<meta name="theme-color" content="#050d1f">
+<style>
+:root{--bg:#050d1f;--surface:rgba(9,22,40,.9);--surface2:#0d1e35;--surface3:#122540;--border:rgba(22,46,74,.8);--border2:#1e3d5e;--accent:#00d4ff;--accent2:#7b2fff;--accent3:#10b981;--orange:#ff8c00;--gold:#f59e0b;--pink:#ec4899;--danger:#ef4444;--text:#e2e8f0;--muted:#7a93b4;--dim:#3d5272}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;line-height:1.5}
+.wrap{max-width:1080px;margin:0 auto;padding:26px 18px 70px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:800;color:#03101f;box-shadow:0 0 24px rgba(0,212,255,.4)}
+.brand b{font-weight:800}.brand small{display:block;color:var(--muted);font-size:11px;letter-spacing:1.5px;text-transform:uppercase}
+.btn{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(120deg,var(--accent),var(--accent2));color:#03101f;font-weight:700;border:none;border-radius:10px;padding:11px 18px;cursor:pointer;font-size:14px}
+.btn.ghost{background:var(--surface2);color:var(--text);border:1px solid var(--border2)}
+.btn:hover{filter:brightness(1.08)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:22px;margin-bottom:18px}
+h2{font-size:16px;margin-bottom:16px;display:flex;align-items:center;gap:9px}
+.gate{max-width:520px;margin:8vh auto 0;text-align:center}
+.gate h1{font-size:26px;margin:16px 0 8px}.gate p{color:var(--muted);margin-bottom:18px}
+input{width:100%;background:var(--surface3);border:1px solid var(--border2);border-radius:10px;padding:13px 15px;color:var(--text);font-size:14px;outline:none}
+input:focus{border-color:var(--accent)}
+.hint{font-size:12px;color:var(--dim);margin-top:8px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:18px}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px}
+.kpi b{display:block;font-size:32px;font-weight:800;color:var(--accent)}
+.kpi span{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:780px){.grid2{grid-template-columns:1fr}}
+.dim-row{margin-bottom:14px}
+.dim-top{display:flex;justify-content:space-between;font-size:14px;margin-bottom:6px}
+.dim-name{font-weight:700}
+.dim-bar{height:12px;background:var(--surface3);border-radius:999px;overflow:hidden}
+.dim-fill{height:100%;border-radius:999px;transition:width .7s}
+.lvlbars{display:flex;flex-direction:column;gap:12px}
+.lvlbar .lt{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px}
+.bar{height:14px;background:var(--surface3);border-radius:999px;overflow:hidden}
+.bar > div{height:100%;border-radius:999px}
+.callout{background:linear-gradient(120deg,rgba(0,212,255,.08),rgba(123,47,255,.08));border:1px solid var(--border2);border-radius:14px;padding:16px 18px;font-size:14px;color:var(--text)}
+.callout b{color:var(--accent)}
+.gaps li{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px}
+.gaps li:last-child{border:none}
+.gaps .g-val{font-weight:800;white-space:nowrap}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--border)}
+th{color:var(--muted);text-transform:uppercase;font-size:11px;letter-spacing:.5px}
+.tag{font-size:10px;font-weight:800;padding:2px 8px;border-radius:999px;letter-spacing:.5px}
+.tablewrap{overflow-x:auto}
+.err{color:var(--danger);font-size:13px;margin-top:10px}
+.muted{color:var(--muted)}
+canvas{max-width:100%}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="brand"><div class="logo">IA</div><div><b>Panel NEXTGEN · Madurez IA</b><small>Análisis para calibrar el entrenamiento</small></div></div>
+    <div id="actions" style="display:none">
+      <button class="btn ghost" id="csv">⬇ Exportar CSV</button>
+      <button class="btn" id="reload">🔄 Actualizar</button>
+    </div>
+  </div>
+
+  <!-- GATE -->
+  <div id="gate" class="gate">
+    <div class="logo" style="margin:0 auto">IA</div>
+    <h1>Acceso al panel</h1>
+    <p>Pega tu <b>clave secreta</b> de Supabase (Settings → API Keys → Secret keys → <i>Reveal</i>). Se guarda solo en este navegador, nunca se publica.</p>
+    <input id="secret" type="password" placeholder="sb_secret_...">
+    <button class="btn" style="width:100%;margin-top:14px" id="enter">Entrar al panel →</button>
+    <div class="err" id="gerr"></div>
+    <p class="hint">La clave secreta da acceso completo a la base. No la compartas ni la pegues en sitios públicos.</p>
+  </div>
+
+  <!-- DASH -->
+  <div id="dash" style="display:none">
+    <div class="kpis" id="kpis"></div>
+
+    <div class="card">
+      <h2>🎯 Recomendación de calibración</h2>
+      <div class="callout" id="calib">—</div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h2>📊 Madurez promedio del grupo</h2>
+        <div id="dims"></div>
+      </div>
+      <div class="card">
+        <h2>🕸️ Mapa del grupo</h2>
+        <canvas id="radar" width="460" height="380"></canvas>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h2>📈 Distribución por nivel</h2>
+        <div class="lvlbars" id="levels"></div>
+      </div>
+      <div class="card">
+        <h2>⚠️ Mayores vacíos (preguntas con menor puntaje)</h2>
+        <ul class="gaps" id="gaps"></ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>👥 Respuestas individuales (<span id="cnt">0</span>)</h2>
+      <div class="tablewrap"><table id="tbl"><thead><tr>
+        <th>#</th><th>Nombre</th><th>Total</th><th>Nivel</th><th>Eco</th><th>IA</th><th>Marca</th><th>Estr</th><th>Ment</th><th>Contacto</th><th>Fecha</th>
+      </tr></thead><tbody id="tbody"></tbody></table></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SB_URL="https://nvgkhdrrxqdgxktfkioa.supabase.co", SB_TABLE="nextgen_respuestas";
+const DIMS=[
+  {k:"d_ecosistema",cat:"Ecosistema Digital",c:"#00d4ff"},
+  {k:"d_ia",cat:"Inteligencia Artificial",c:"#7b2fff"},
+  {k:"d_marca",cat:"Marca y Propuesta de Valor",c:"#ff8c00"},
+  {k:"d_estrategia",cat:"Estrategia Comercial",c:"#10b981"},
+  {k:"d_mentalidad",cat:"Mentalidad y Crecimiento",c:"#ec4899"}
+];
+// etiquetas cortas de las 25 preguntas (para "mayores vacíos")
+const QLAB=["Herramientas digitales","Presencia en redes","Procesos automatizados","Ecosistema Google","Comodidad con lo nuevo",
+"Frecuencia de uso de IA","Para qué usa IA","Nº de herramientas IA","Calidad de prompts","Investiga con IA",
+"Propuesta de valor","Identidad de marca","Crea contenido","IA para marca/visual","Diferenciación",
+"Cliente ideal","Cómo consigue clientes","Proceso de ventas","IA para vender","Conoce sus números",
+"Visión sobre la IA","Invierte en aprender","Reacción ante errores","Metas claras","Listo para escalar con IA"];
+const $=id=>document.getElementById(id);
+const hexA=(h,a)=>{const n=parseInt(h.slice(1),16);return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`;};
+
+// GATE
+const saved=localStorage.getItem("nextgen_secret");
+if(saved){$("secret").value=saved;}
+$("enter").onclick=()=>load($("secret").value.trim());
+$("secret").addEventListener("keydown",e=>{if(e.key==="Enter")$("enter").click();});
+
+let DATA=[];
+async function load(secret){
+  if(!secret){$("gerr").textContent="Pega tu clave secreta.";return;}
+  $("gerr").textContent="Cargando…";
+  try{
+    const r=await fetch(`${SB_URL}/rest/v1/${SB_TABLE}?select=*&order=created_at.desc`,{headers:{"apikey":secret,"Authorization":"Bearer "+secret}});
+    if(!r.ok){const t=await r.text();$("gerr").textContent="Error "+r.status+": "+t.slice(0,120);return;}
+    DATA=await r.json();
+    localStorage.setItem("nextgen_secret",secret);
+    $("gate").style.display="none";$("dash").style.display="block";$("actions").style.display="flex";
+    render();
+  }catch(e){$("gerr").textContent="No se pudo conectar: "+e.message;}
+}
+$("reload").onclick=()=>load(localStorage.getItem("nextgen_secret"));
+$("csv").onclick=exportCSV;
+
+function render(){
+  const n=DATA.length;
+  // KPIs
+  const avg=n?Math.round(DATA.reduce((s,d)=>s+(d.total||0),0)/n):0;
+  const lv={arranque:0,aceleracion:0,ecosistema:0};
+  DATA.forEach(d=>{const t=d.total||0; if(t>=75)lv.ecosistema++;else if(t>=50)lv.aceleracion++;else lv.arranque++;});
+  $("kpis").innerHTML=`
+    <div class="kpi"><b>${n}</b><span>Respuestas</span></div>
+    <div class="kpi"><b>${avg}</b><span>Puntaje promedio</span></div>
+    <div class="kpi"><b style="color:#ec4899">${lv.arranque}</b><span>Modo Arranque</span></div>
+    <div class="kpi"><b style="color:#f59e0b">${lv.aceleracion}</b><span>Modo Aceleración</span></div>
+    <div class="kpi"><b style="color:#10b981">${lv.ecosistema}</b><span>Modo Ecosistema</span></div>`;
+  $("cnt").textContent=n;
+
+  // dimension averages (cada dimensión sobre 20)
+  const dimAvg={};
+  DIMS.forEach(d=>{dimAvg[d.k]=n?DATA.reduce((s,r)=>s+(r[d.k]||0),0)/n:0;});
+  const dw=$("dims");dw.innerHTML="";
+  DIMS.forEach(d=>{const v=dimAvg[d.k],p=Math.round(v/20*100);
+    dw.innerHTML+=`<div class="dim-row"><div class="dim-top"><span class="dim-name" style="color:${d.c}">${d.cat}</span><span>${v.toFixed(1)}/20 · ${p}%</span></div><div class="dim-bar"><div class="dim-fill" style="width:${p}%;background:linear-gradient(90deg,${hexA(d.c,.6)},${d.c})"></div></div></div>`;});
+
+  // levels distribution
+  const lw=$("levels");const cfg=[["Modo Arranque",lv.arranque,"#ec4899"],["Modo Aceleración",lv.aceleracion,"#f59e0b"],["Modo Ecosistema",lv.ecosistema,"#10b981"]];
+  lw.innerHTML="";cfg.forEach(([lab,c,col])=>{const p=n?Math.round(c/n*100):0;lw.innerHTML+=`<div class="lvlbar"><div class="lt"><span>${lab}</span><span>${c} · ${p}%</span></div><div class="bar"><div style="width:${p}%;background:${col}"></div></div></div>`;});
+
+  // gaps: average score per question (1..4) across responses
+  const qsum=new Array(25).fill(0), qcnt=new Array(25).fill(0);
+  DATA.forEach(r=>{(r.respuestas||[]).forEach(a=>{const i=(a.id||0)-1; if(i>=0&&i<25&&typeof a.score==="number"){qsum[i]+=a.score;qcnt[i]++;}});});
+  const qavg=qsum.map((s,i)=>qcnt[i]?{i,v:s/qcnt[i]}:{i,v:null}).filter(o=>o.v!==null).sort((a,b)=>a.v-b.v).slice(0,6);
+  const gw=$("gaps");gw.innerHTML = qavg.length? "" : "<li class='muted'>Aún sin datos suficientes.</li>";
+  qavg.forEach(o=>{const pct=Math.round((o.v-1)/3*100);gw.innerHTML+=`<li><span>${o.i+1}. ${QLAB[o.i]}</span><span class="g-val" style="color:${pct<50?'#ec4899':pct<75?'#f59e0b':'#10b981'}">${o.v.toFixed(1)}/4</span></li>`;});
+
+  // calibration recommendation
+  $("calib").innerHTML=calib(n,avg,dimAvg,lv,qavg);
+
+  // radar
+  drawRadar(dimAvg);
+
+  // table
+  const tb=$("tbody");tb.innerHTML="";
+  DATA.forEach((d,idx)=>{
+    const t=d.total||0,col=t>=75?"#10b981":t>=50?"#f59e0b":"#ec4899";
+    const fecha=d.created_at?new Date(d.created_at).toLocaleString("es-CO",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"}):"";
+    const cont=[d.email,d.telefono].filter(Boolean).join(" · ")||"—";
+    tb.innerHTML+=`<tr><td>${idx+1}</td><td><b>${esc(d.nombre||"—")}</b></td><td><b>${t}</b></td><td><span class="tag" style="color:${col};background:${hexA(col,.14)}">${esc(d.nivel||"")}</span></td><td>${d.d_ecosistema??""}</td><td>${d.d_ia??""}</td><td>${d.d_marca??""}</td><td>${d.d_estrategia??""}</td><td>${d.d_mentalidad??""}</td><td class="muted">${esc(cont)}</td><td class="muted">${fecha}</td></tr>`;
+  });
+}
+
+function calib(n,avg,dimAvg,lv,qavg){
+  if(!n)return "Aún no hay respuestas. Comparte el enlace del diagnóstico con los participantes.";
+  const sorted=DIMS.map(d=>({cat:d.cat,v:dimAvg[d.k]})).sort((a,b)=>a.v-b.v);
+  const weak=sorted[0].cat, strong=sorted[sorted.length-1].cat;
+  const mode = avg>=75?"avanzado (Modo Ecosistema)":avg>=50?"intermedio (Modo Aceleración)":"inicial (Modo Arranque)";
+  const start = avg<50?"Arranca desde lo básico: mentalidad y primeros pasos con IA. No asumas conocimiento previo.":avg<75?"El grupo ya tiene base: dedica menos tiempo a 'qué es la IA' y más a conectar herramientas con su negocio.":"Grupo avanzado: enfócate en orquestar el ecosistema, automatización y casos de uso ambiciosos.";
+  const gapTxt = qavg.length?`Los temas más débiles individualmente: <b>${QLAB[qavg[0].i]}</b>, <b>${QLAB[qavg[1]?.i]}</b>${qavg[2]?` y <b>${QLAB[qavg[2].i]}</b>`:""}.`:"";
+  return `El grupo está en nivel <b>${mode}</b> (promedio ${avg}/100). La dimensión <b>más débil</b> es <b>${weak}</b> → dale más peso en el curso. La <b>más fuerte</b> es <b>${strong}</b> → puedes avanzar rápido ahí. ${start} ${gapTxt}`;
+}
+
+function drawRadar(dimAvg){
+  const cv=$("radar"),ctx=cv.getContext("2d");const W=cv.width,H=cv.height,cx=W/2,cy=H/2+4,R=Math.min(W,H)/2-58,N=DIMS.length;
+  ctx.clearRect(0,0,W,H);
+  for(let g=1;g<=4;g++){ctx.beginPath();for(let i=0;i<=N;i++){const a=-Math.PI/2+i*2*Math.PI/N,r=R*g/4,x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.strokeStyle="rgba(122,147,180,.16)";ctx.stroke();}
+  for(let i=0;i<N;i++){const a=-Math.PI/2+i*2*Math.PI/N;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+R*Math.cos(a),cy+R*Math.sin(a));ctx.strokeStyle="rgba(122,147,180,.16)";ctx.stroke();}
+  ctx.beginPath();DIMS.forEach((d,i)=>{const p=(dimAvg[d.k]||0)/20,a=-Math.PI/2+i*2*Math.PI/N,r=R*p,x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);i?ctx.lineTo(x,y):ctx.moveTo(x,y);});ctx.closePath();
+  ctx.fillStyle="rgba(0,212,255,.15)";ctx.fill();ctx.strokeStyle="#00d4ff";ctx.lineWidth=2;ctx.stroke();
+  DIMS.forEach((d,i)=>{const p=(dimAvg[d.k]||0)/20,a=-Math.PI/2+i*2*Math.PI/N,r=R*p,x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);ctx.beginPath();ctx.arc(x,y,4,0,7);ctx.fillStyle=d.c;ctx.fill();
+    const lx=cx+(R+30)*Math.cos(a),ly=cy+(R+30)*Math.sin(a);ctx.fillStyle="#cdd9ec";ctx.font="10px Segoe UI";ctx.textAlign="center";
+    short(d.cat).forEach((w,k)=>ctx.fillText(w,lx,ly+k*12-(short(d.cat).length-1)*6));});
+}
+const short=c=>({"Ecosistema Digital":["Ecosistema"],"Inteligencia Artificial":["Inteligencia","Artificial"],"Marca y Propuesta de Valor":["Marca"],"Estrategia Comercial":["Estrategia"],"Mentalidad y Crecimiento":["Mentalidad"]}[c]||[c]);
+
+function esc(s){return String(s).replace(/[<>&]/g,c=>({"<":"&lt;",">":"&gt;","&":"&amp;"}[c]));}
+function exportCSV(){
+  const head=["nombre","email","telefono","total","nivel","d_ecosistema","d_ia","d_marca","d_estrategia","d_mentalidad","fecha"];
+  const rows=DATA.map(d=>[d.nombre,d.email,d.telefono,d.total,d.nivel,d.d_ecosistema,d.d_ia,d.d_marca,d.d_estrategia,d.d_mentalidad,d.created_at].map(v=>`"${(v??"").toString().replace(/"/g,'""')}"`).join(","));
+  const csv=[head.join(","),...rows].join("\n");
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="diagnostico-nextgen.csv";a.click();
+}
+</script>
+</body>
+</html>
