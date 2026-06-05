@@ -68,11 +68,11 @@ canvas{max-width:100%}
   <div id="gate" class="gate">
     <div class="logo" style="margin:0 auto">IA</div>
     <h1>Acceso al panel</h1>
-    <p>Pega tu <b>clave secreta</b> de Supabase (Settings → API Keys → Secret keys → <i>Reveal</i>). Se guarda solo en este navegador, nunca se publica.</p>
-    <input id="secret" type="password" placeholder="sb_secret_...">
+    <p>Pega tu clave <b>service_role</b> de Supabase: Settings → API Keys → pestaña <b>"Legacy anon, service_role API keys"</b> → copia la clave <b>service_role</b> (empieza por <code>eyJ…</code>).</p>
+    <input id="secret" type="password" placeholder="eyJ... (service_role)">
     <button class="btn" style="width:100%;margin-top:14px" id="enter">Entrar al panel →</button>
     <div class="err" id="gerr"></div>
-    <p class="hint">La clave secreta da acceso completo a la base. No la compartas ni la pegues en sitios públicos.</p>
+    <p class="hint">Se guarda solo en este navegador, nunca se publica. La clave service_role da acceso completo a la base: no la compartas.</p>
   </div>
 
   <!-- DASH -->
@@ -231,8 +231,4 @@ function exportCSV(){
   const head=["nombre","email","telefono","total","nivel","d_ecosistema","d_ia","d_marca","d_estrategia","d_mentalidad","fecha"];
   const rows=DATA.map(d=>[d.nombre,d.email,d.telefono,d.total,d.nivel,d.d_ecosistema,d.d_ia,d.d_marca,d.d_estrategia,d.d_mentalidad,d.created_at].map(v=>`"${(v??"").toString().replace(/"/g,'""')}"`).join(","));
   const csv=[head.join(","),...rows].join("\n");
-  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="diagnostico-nextgen.csv";a.click();
-}
-</script>
-</body>
-</html>
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"
