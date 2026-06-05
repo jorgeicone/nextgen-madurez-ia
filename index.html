@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagnóstico NEXTGEN · Madurez IA</title>
+<meta name="description" content="Diagnóstico NEXTGEN · Madurez IA para emprendedores. Descubre tu nivel de adopción de IA y monta tu ventaja competitiva. Curso NEXTGEN · Universidad Libre Cúcuta.">
+<meta name="theme-color" content="#050d1f">
+<style>
+:root{
+  --bg:#050d1f; --surface:rgba(9,22,40,0.9); --surface2:#0d1e35; --surface3:#122540;
+  --border:rgba(22,46,74,0.8); --border2:#1e3d5e;
+  --accent:#00d4ff; --accent2:#7b2fff; --accent3:#10b981; --orange:#ff8c00;
+  --gold:#f59e0b; --pink:#ec4899; --danger:#ef4444;
+  --text:#e2e8f0; --text-muted:#7a93b4; --text-dim:#3d5272;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+body{min-height:100vh;position:relative;overflow-x:hidden}
+#stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+.wrap{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:28px 18px 80px}
+.brand{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:22px}
+.brand .logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;color:#03101f;box-shadow:0 0 24px rgba(0,212,255,.45)}
+.brand .bt{font-weight:800;letter-spacing:.5px}
+.brand .bs{font-size:11px;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase}
+.pill{display:inline-flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border2);color:var(--accent);font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:7px 16px;border-radius:999px}
+.pill .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent)}
+.center{text-align:center}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:22px;padding:30px;backdrop-filter:blur(8px);box-shadow:0 20px 60px rgba(0,0,0,.4)}
+h1{font-size:34px;font-weight:800;line-height:1.15;margin:18px 0 10px}
+h1 .grad{background:linear-gradient(120deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.lead{color:var(--text-muted);font-size:16px;max-width:620px;margin:0 auto}
+.stats{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin:26px 0}
+.stat{flex:1;min-width:120px;background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:16px 10px}
+.stat b{display:block;font-size:26px;color:var(--accent);font-weight:800}
+.stat span{font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px}
+label{display:block;font-size:13px;color:var(--text-muted);margin:16px 0 7px;text-transform:uppercase;letter-spacing:.5px}
+input{width:100%;background:var(--surface3);border:1px solid var(--border2);border-radius:12px;padding:14px 16px;color:var(--text);font-size:16px;outline:none;transition:.2s}
+input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,212,255,.15)}
+.hint{font-size:12px;color:var(--text-dim);margin-top:6px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(120deg,var(--accent),var(--accent2));color:#03101f;font-weight:800;font-size:16px;border:none;border-radius:12px;padding:15px 26px;cursor:pointer;transition:.2s;box-shadow:0 8px 26px rgba(0,212,255,.3)}
+.btn:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,212,255,.45)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn.ghost{background:var(--surface2);color:var(--text);border:1px solid var(--border2);box-shadow:none}
+.btn.full{width:100%;margin-top:22px}
+.hidden{display:none!important}
+/* progress */
+.prog-head{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+.prog-bar{height:8px;background:var(--surface3);border-radius:999px;overflow:hidden}
+.prog-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:999px;transition:width .35s}
+.q-cat{display:inline-block;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 12px;border-radius:999px;margin:22px 0 14px}
+.q-text{font-size:22px;font-weight:700;line-height:1.3;margin-bottom:22px}
+.opts{display:flex;flex-direction:column;gap:12px}
+.opt{display:flex;align-items:center;gap:14px;background:var(--surface2);border:1px solid var(--border2);border-radius:14px;padding:16px 18px;cursor:pointer;transition:.18s;font-size:15px}
+.opt:hover{border-color:var(--accent);background:var(--surface3)}
+.opt.sel{border-color:var(--accent);background:rgba(0,212,255,.08);box-shadow:0 0 0 2px rgba(0,212,255,.2)}
+.opt .mk{width:24px;height:24px;border-radius:50%;border:2px solid var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:.18s}
+.opt.sel .mk{border-color:var(--accent);background:var(--accent)}
+.opt.sel .mk::after{content:"";width:9px;height:9px;border-radius:50%;background:#03101f}
+.nav{display:flex;justify-content:space-between;gap:12px;margin-top:26px}
+/* results */
+.score-circle{width:180px;height:180px;border-radius:50%;margin:6px auto 18px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;position:relative}
+.score-circle b{font-size:54px;line-height:1}
+.score-circle span{font-size:12px;letter-spacing:2px;text-transform:uppercase;opacity:.85}
+.lvl-badge{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:14px;padding:8px 18px;border-radius:999px;letter-spacing:.5px}
+.r-title{font-size:30px;font-weight:800;margin:16px 0 4px}
+.r-sub{font-weight:700;margin-bottom:14px}
+.r-desc{color:var(--text-muted);max-width:560px;margin:0 auto 6px}
+.chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:20px}
+.chip{display:inline-flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border2);border-radius:999px;padding:7px 15px;font-size:13px;font-weight:600}
+.chip i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.sec-title{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:800;margin:0 0 18px}
+.dim-row{margin-bottom:18px}
+.dim-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px}
+.dim-name{font-weight:700;font-size:15px}
+.dim-lbl{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:2px 9px;border-radius:999px;margin-left:8px}
+.dim-val{font-weight:800}
+.dim-pct{font-size:12px;color:var(--text-muted)}
+.dim-bar{height:12px;background:var(--surface3);border-radius:999px;overflow:hidden}
+.dim-fill{height:100%;border-radius:999px;transition:width .8s}
+.reco{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--border)}
+.reco:last-child{border-bottom:none}
+.reco .ic{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.reco h4{font-size:15px;margin-bottom:3px}
+.reco p{font-size:14px;color:var(--text-muted)}
+.save-note{font-size:13px;text-align:center;margin-top:18px;color:var(--text-dim)}
+.foot{text-align:center;color:var(--text-dim);font-size:12px;margin-top:34px;line-height:1.7}
+.spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#03101f;border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+canvas#radar{display:block;margin:0 auto;max-width:100%}
+@media(max-width:560px){h1{font-size:27px}.q-text{font-size:19px}.card{padding:22px}.score-circle{width:150px;height:150px}.score-circle b{font-size:44px}}
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+<div class="wrap">
+  <div class="brand">
+    <div class="logo">IA</div>
+    <div><div class="bt">NEXTGEN · Madurez IA</div><div class="bs">Curso NEXTGEN · U. Libre Cúcuta</div></div>
+  </div>
+
+  <!-- INTRO -->
+  <div id="intro" class="card center">
+    <span class="pill"><span class="dot"></span> Diagnóstico de adopción de IA</span>
+    <h1>¿Qué tan lista está tu <span class="grad">IA</span> para ser tu ventaja competitiva?</h1>
+    <p class="lead">25 preguntas para descubrir tu nivel real de madurez en inteligencia artificial y ecosistema digital. Con tu resultado, calibramos juntos el entrenamiento NEXTGEN para llevarte al siguiente nivel.</p>
+    <div class="stats">
+      <div class="stat"><b>25</b><span>Preguntas</span></div>
+      <div class="stat"><b>~7</b><span>Minutos</span></div>
+      <div class="stat"><b>5</b><span>Dimensiones</span></div>
+      <div class="stat"><b>100</b><span>Puntaje máx</span></div>
+    </div>
+    <div style="text-align:left;max-width:520px;margin:0 auto">
+      <label>¿Cómo te llamas, emprendedor/a? *</label>
+      <input id="in-nombre" placeholder="Tu nombre y apellido" autocomplete="name">
+      <label>Correo (opcional)</label>
+      <input id="in-email" placeholder="tucorreo@ejemplo.com" autocomplete="email" type="email">
+      <label>WhatsApp (opcional)</label>
+      <input id="in-tel" placeholder="+57 300 000 0000" autocomplete="tel">
+      <p class="hint">Tus datos solo se usan para el seguimiento del curso NEXTGEN.</p>
+    </div>
+    <button class="btn full" id="start">Comenzar diagnóstico →</button>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quiz" class="card hidden">
+    <div class="prog-head"><span id="prog-label">Pregunta 1 / 25</span><span id="prog-cat">Ecosistema Digital</span></div>
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
+    <div class="q-cat" id="q-cat">Ecosistema Digital</div>
+    <div class="q-text" id="q-text">…</div>
+    <div class="opts" id="opts"></div>
+    <div class="nav">
+      <button class="btn ghost" id="prev">← Anterior</button>
+      <button class="btn" id="next" disabled>Siguiente →</button>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="results" class="hidden">
+    <div class="card center" style="margin-bottom:20px">
+      <div class="score-circle" id="scoreCircle"><b id="scoreNum">0</b><span>Puntos</span></div>
+      <div><span class="lvl-badge" id="lvlBadge">—</span></div>
+      <div class="r-title" id="rName">—</div>
+      <div class="r-sub" id="rMode">—</div>
+      <p class="r-desc" id="rDesc">—</p>
+      <div class="chips" id="chips"></div>
+    </div>
+
+    <div class="card" style="margin-bottom:20px">
+      <div class="sec-title">🕸️ Tu mapa de madurez IA</div>
+      <canvas id="radar" width="520" height="420"></canvas>
+    </div>
+
+    <div class="card" style="margin-bottom:20px">
+      <div class="sec-title">📊 Detalle por dimensión</div>
+      <div id="dims"></div>
+    </div>
+
+    <div class="card" style="margin-bottom:20px">
+      <div class="sec-title">💡 Tus próximos pasos hacia el curso NEXTGEN</div>
+      <div id="recos"></div>
+    </div>
+
+    <div class="center">
+      <button class="btn ghost" onclick="window.print()">🖨️ Guardar / Imprimir</button>
+      <button class="btn ghost" onclick="location.reload()">🔄 Nuevo diagnóstico</button>
+      <p class="save-note" id="saveNote"></p>
+    </div>
+  </div>
+
+  <div class="foot">
+    NEXTGEN · Madurez IA &nbsp;·&nbsp; Curso de Inteligencia Artificial para Emprendedores<br>
+    Universidad Libre · Cúcuta &nbsp;·&nbsp; ICONE ialabs
+  </div>
+</div>
+
+<script>
+/* ====== CONFIG SUPABASE ====== */
+const SB_URL = "https://nvgkhdrrxqdgxktfkioa.supabase.co";
+const SB_KEY = "sb_publishable_d1RrtE7S-9a8e8mGKRRjxQ_4HU_nkDl";
+const SB_TABLE = "nextgen_respuestas";
+
+/* ====== DIMENSIONES ====== */
+const DIMS = [
+  {key:"d_ecosistema", cat:"Ecosistema Digital",        color:"#00d4ff"},
+  {key:"d_ia",         cat:"Inteligencia Artificial",   color:"#7b2fff"},
+  {key:"d_marca",      cat:"Marca y Propuesta de Valor", color:"#ff8c00"},
+  {key:"d_estrategia", cat:"Estrategia Comercial",       color:"#10b981"},
+  {key:"d_mentalidad", cat:"Mentalidad y Crecimiento",   color:"#ec4899"}
+];
+const COLOR = {}; DIMS.forEach(d=>COLOR[d.cat]=d.color);
+
+/* ====== 25 PREGUNTAS (opciones de menor a mayor: 1..4) ====== */
+const QS = [
+ // Ecosistema Digital
+ {cat:"Ecosistema Digital",q:"¿Qué herramientas digitales usas para gestionar tu negocio o tu idea?",opts:["Nada digital: todo en papel o de memoria.","Lo básico: WhatsApp y notas del celular.","Apps organizadas: Google Drive, Docs, Sheets, calendario.","Un ecosistema conectado donde varias herramientas trabajan juntas."]},
+ {cat:"Ecosistema Digital",q:"¿Cómo describes tu presencia en internet y redes sociales?",opts:["No tengo presencia digital.","Tengo perfiles pero casi no publico.","Publico con regularidad en 1–2 redes.","Presencia activa y coherente en varios canales + web."]},
+ {cat:"Ecosistema Digital",q:"¿Tienes procesos automatizados (respuestas, cobros, agenda)?",opts:["Todo es manual.","Automatizo una sola cosa muy básica.","Tengo varias automatizaciones sencillas.","Buena parte de lo repetitivo está automatizado."]},
+ {cat:"Ecosistema Digital",q:"¿Usas el ecosistema Google (Drive, Docs, Sheets, Gmail) en tu negocio?",opts:["No lo uso.","Solo Gmail.","Uso Drive/Docs/Sheets para organizarme.","Lo uso integrado y con IA (Gemini) encima."]},
+ {cat:"Ecosistema Digital",q:"¿Qué tan cómodo te sientes probando herramientas digitales nuevas?",opts:["Me cuesta mucho y lo evito.","Pruebo solo si alguien me ayuda.","Aprendo solo con tutoriales.","Adopto y le enseño a otros rápidamente."]},
+ // Inteligencia Artificial
+ {cat:"Inteligencia Artificial",q:"¿Con qué frecuencia usas IA (ChatGPT, Gemini, Claude, etc.)?",opts:["Nunca la he usado.","La he probado un par de veces.","La uso varias veces por semana.","La uso a diario en mi trabajo."]},
+ {cat:"Inteligencia Artificial",q:"¿Para qué usas la IA hoy?",opts:["No la uso.","Para preguntas sueltas o tareas escolares.","Para textos, ideas y organizar mi trabajo.","Como apoyo central de mi negocio en varias áreas."]},
+ {cat:"Inteligencia Artificial",q:"¿Cuántas herramientas de IA distintas usas?",opts:["Ninguna.","Una (normalmente ChatGPT).","Dos o tres según la tarea.","Varias, combinándolas como un equipo."]},
+ {cat:"Inteligencia Artificial",q:"¿Qué tan bien sabes 'pedirle' a la IA (prompts)?",opts:["No sé cómo hablarle.","Le pido cosas muy simples.","Doy contexto e instrucciones claras.","Uso rol, formato y restricciones, e itero los resultados."]},
+ {cat:"Inteligencia Artificial",q:"¿Has usado IA para investigar tu mercado o competencia (Perplexity, etc.)?",opts:["No sabía que se podía.","No, pero me interesa.","Alguna vez, de forma básica.","Sí, con regularidad y con fuentes."]},
+ // Marca y Propuesta de Valor
+ {cat:"Marca y Propuesta de Valor",q:"¿Tienes clara tu propuesta de valor (a quién ayudas y con qué)?",opts:["No la tengo definida.","La tengo en la cabeza, sin escribir.","La tengo escrita y la comunico.","Está validada con clientes reales."]},
+ {cat:"Marca y Propuesta de Valor",q:"¿Tienes identidad de marca (nombre, logo, estilo)?",opts:["No tengo nada.","Solo un nombre.","Nombre + logo básico.","Identidad completa y coherente."]},
+ {cat:"Marca y Propuesta de Valor",q:"¿Creas contenido para mostrar lo que haces?",opts:["No creo contenido.","De vez en cuando, sin plan.","Publico con cierta constancia.","Tengo un sistema de contenido (y uso IA para acelerarlo)."]},
+ {cat:"Marca y Propuesta de Valor",q:"¿Usas IA para crear tu marca o contenido visual (imágenes, copy)?",opts:["No.","Lo he pensado pero no.","A veces, para textos.","Sí, para textos e imágenes con regularidad."]},
+ {cat:"Marca y Propuesta de Valor",q:"¿Qué tan diferenciado eres frente a tu competencia?",opts:["No sé en qué me diferencio.","Me parezco a la mayoría.","Tengo algo que me distingue.","Tengo una ventaja clara y reconocida."]},
+ // Estrategia Comercial
+ {cat:"Estrategia Comercial",q:"¿Tienes claro tu cliente ideal?",opts:["No lo tengo definido.","Tengo una idea vaga.","Lo tengo perfilado.","Lo conozco a fondo: dolores y dónde está."]},
+ {cat:"Estrategia Comercial",q:"¿Cómo consigues clientes hoy?",opts:["Aún no tengo clientes.","Solo por recomendación o casualidad.","Tengo un canal que funciona.","Tengo varios canales y los mido."]},
+ {cat:"Estrategia Comercial",q:"¿Tienes un proceso de ventas (seguimiento, cierre)?",opts:["No, improviso.","Respondo solo cuando me escriben.","Tengo pasos definidos.","Proceso claro y con seguimiento (apoyado en herramientas)."]},
+ {cat:"Estrategia Comercial",q:"¿Usas IA para vender (guiones, respuestas, propuestas)?",opts:["No.","Aún no, pero quiero.","A veces, para redactar.","Sí, es parte de mi proceso comercial."]},
+ {cat:"Estrategia Comercial",q:"¿Conoces tus números básicos (precio, costo, margen)?",opts:["No los conozco.","Solo el precio.","Conozco precio y costo.","Manejo precio, costo y margen, y decido con ellos."]},
+ // Mentalidad y Crecimiento
+ {cat:"Mentalidad y Crecimiento",q:"¿Cómo ves la IA para tu negocio?",opts:["Me da miedo o desconfianza.","Curiosidad, pero no he arrancado.","La veo útil y la estoy adoptando.","La veo como mi ventaja competitiva."]},
+ {cat:"Mentalidad y Crecimiento",q:"¿Cuánto inviertes en aprender (tiempo o dinero)?",opts:["Casi nada.","Solo cuando es gratis y fácil.","Dedico tiempo cada semana.","Invierto de forma constante y deliberada."]},
+ {cat:"Mentalidad y Crecimiento",q:"¿Cómo reaccionas ante los errores o fracasos?",opts:["Me frenan mucho.","Me cuesta, pero sigo.","Aprendo y ajusto.","Los uso como combustible para mejorar rápido."]},
+ {cat:"Mentalidad y Crecimiento",q:"¿Tienes metas claras para tu emprendimiento?",opts:["No tengo metas.","Ideas sueltas en la cabeza.","Metas definidas.","Metas con plan y seguimiento."]},
+ {cat:"Mentalidad y Crecimiento",q:"¿Qué tan listo te sientes para escalar con IA?",opts:["No sé por dónde empezar.","Tengo ganas, pero me falta guía.","Ya doy mis primeros pasos.","Tengo claro mi plan y lo estoy ejecutando."]}
+];
+
+/* ====== NIVELES ====== */
+const LEVELS = {
+  arranque:{label:"🌱 Nivel Inicial", range:"0 – 49 pts", mode:"Modo Arranque", color:"#ec4899",
+    desc:"Estás en el punto de partida. Cada paso que des desde aquí será un salto real. El curso NEXTGEN está diseñado para acompañarte desde cero y que salgas con tu ecosistema de IA montado."},
+  aceleracion:{label:"🚀 Nivel Intermedio", range:"50 – 74 pts", mode:"Modo Aceleración", color:"#f59e0b",
+    desc:"Ya tienes bases digitales y has probado la IA. Es momento de pasar de usarla suelta a convertirla en un sistema. En NEXTGEN aceleramos tu adopción y la conectamos con tu negocio."},
+  ecosistema:{label:"⚡ Nivel Experto", range:"75 – 100 pts", mode:"Modo Ecosistema", color:"#10b981",
+    desc:"Tienes un negocio digital maduro y la IA ya es parte de tu día a día. Estás listo para orquestar un verdadero equipo de IAs como ventaja competitiva. En NEXTGEN afinamos, automatizamos y multiplicamos tu impacto."}
+};
+const RECOS = {
+  arranque:[
+    {ic:"🤖",bg:"rgba(123,47,255,.12)",t:"Da tu primer paso con IA esta semana",d:"Usa ChatGPT o Gemini para describir tu idea y mejorar tu propuesta de valor. Es el arranque."},
+    {ic:"🧰",bg:"rgba(0,212,255,.12)",t:"Arma tu base digital",d:"Crea tu cuenta de Google (Drive, Docs) y elige UNA red social donde esté tu cliente ideal."},
+    {ic:"🎯",bg:"rgba(245,158,11,.12)",t:"Define a quién ayudas",d:"Escribe: 'Ayudo a [quién] a [qué resultado]'. Lo afinaremos juntos en el curso."},
+    {ic:"📌",bg:"rgba(236,72,153,.12)",t:"Ven al curso con tu idea en una frase",d:"En NEXTGEN la convertimos en un negocio potenciado con IA, paso a paso."}
+  ],
+  aceleracion:[
+    {ic:"🚀",bg:"rgba(0,212,255,.12)",t:"Suma herramientas a tu equipo de IA",d:"Prueba Perplexity para investigar y Claude para entregar trabajo terminado, no solo ChatGPT."},
+    {ic:"✍️",bg:"rgba(123,47,255,.12)",t:"Mejora tus prompts",d:"Usa la fórmula Rol + Contexto + Tarea + Formato. Multiplica la calidad de tus resultados."},
+    {ic:"📣",bg:"rgba(255,140,0,.12)",t:"Sistematiza tu contenido",d:"Usa IA para planear un mes de publicaciones de una sola vez."},
+    {ic:"📈",bg:"rgba(16,185,129,.12)",t:"Define un canal de clientes",d:"Elige un canal que funcione y apóyate en IA para tus guiones de venta."}
+  ],
+  ecosistema:[
+    {ic:"🧠",bg:"rgba(123,47,255,.12)",t:"Conecta tus IAs",d:"Investiga en Perplexity → estrategia en Claude → ejecuta en Google. Que trabajen juntas."},
+    {ic:"⚙️",bg:"rgba(0,212,255,.12)",t:"Automatiza lo repetitivo",d:"Explora Google AI Studio y Antigravity para crear flujos y mini-apps sin código."},
+    {ic:"👑",bg:"rgba(245,158,11,.12)",t:"Posiciónate como referente",d:"Usa IA para crear contenido de alto valor y educar a tu audiencia."},
+    {ic:"🏆",bg:"rgba(16,185,129,.12)",t:"Lleva tu ecosistema al siguiente nivel",d:"En NEXTGEN trabajamos pitch, automatización y escalamiento con IA."}
+  ]
+};
+
+/* ====== ESTADO ====== */
+let user={nombre:"",email:"",tel:""};
+let answers=new Array(QS.length).fill(null);
+let cur=0;
+
+const $=id=>document.getElementById(id);
+
+/* INTRO */
+$("start").onclick=()=>{
+  const n=$("in-nombre").value.trim();
+  if(!n){$("in-nombre").focus();$("in-nombre").style.borderColor="#ef4444";return;}
+  user={nombre:n,email:$("in-email").value.trim(),tel:$("in-tel").value.trim()};
+  $("intro").classList.add("hidden");
+  $("quiz").classList.remove("hidden");
+  render();
+};
+
+/* QUIZ render */
+function render(){
+  const item=QS[cur], c=COLOR[item.cat];
+  $("prog-label").textContent=`Pregunta ${cur+1} / ${QS.length}`;
+  $("prog-cat").textContent=item.cat;
+  $("prog-fill").style.width=((cur)/QS.length*100)+"%";
+  const cat=$("q-cat"); cat.textContent=item.cat; cat.style.color=c; cat.style.background=hexA(c,.12);
+  $("q-text").textContent=item.q;
+  const ow=$("opts"); ow.innerHTML="";
+  item.opts.forEach((o,i)=>{
+    const d=document.createElement("div");
+    d.className="opt"+(answers[cur]===i?" sel":"");
+    d.innerHTML=`<span class="mk"></span><span>${o}</span>`;
+    d.onclick=()=>{answers[cur]=i;render();setTimeout(()=>{if(cur<QS.length-1){cur++;render();}},180);};
+    if(answers[cur]===i){d.querySelector('.mk').style.borderColor=c;d.querySelector('.mk').style.background=c;d.style.borderColor=c;d.style.background=hexA(c,.08);}
+    ow.appendChild(d);
+  });
+  $("prev").disabled=cur===0;
+  $("next").disabled=answers[cur]===null;
+  $("next").textContent=cur===QS.length-1?"Ver resultado ✓":"Siguiente →";
+}
+$("prev").onclick=()=>{if(cur>0){cur--;render();}};
+$("next").onclick=()=>{
+  if(answers[cur]===null)return;
+  if(cur<QS.length-1){cur++;render();}
+  else finish();
+};
+
+/* helpers */
+function hexA(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`;}
+function dimLabel(p){return p>=75?["EXPERTO","#10b981"]:p>=50?["INTERMEDIO","#f59e0b"]:["INICIAL","#ec4899"];}
+
+/* FINISH */
+function finish(){
+  // score per dimension (5 preguntas x (idx+1)  => 5..20)
+  const dimScore={}; DIMS.forEach(d=>dimScore[d.cat]=0);
+  const resp=[];
+  QS.forEach((q,i)=>{const sc=(answers[i]??0)+1; dimScore[q.cat]+=sc; resp.push({id:i+1,cat:q.cat,opt:answers[i],score:sc});});
+  let total=0; DIMS.forEach(d=>total+=dimScore[d.cat]); // 25..100
+  const lvlKey = total>=75?"ecosistema":total>=50?"aceleracion":"arranque";
+  const lvl=LEVELS[lvlKey];
+
+  $("quiz").classList.add("hidden");
+  $("results").classList.remove("hidden");
+  $("prog-fill").style.width="100%";
+
+  // score circle
+  $("scoreNum").textContent=total;
+  const sc=$("scoreCircle"); sc.style.background=`conic-gradient(${lvl.color} ${total*3.6}deg, rgba(255,255,255,.06) 0deg)`;
+  sc.style.boxShadow=`0 0 40px ${hexA(lvl.color,.5)}`;
+  sc.innerHTML=`<div style="position:absolute;inset:10px;border-radius:50%;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center"><b id="scoreNum">${total}</b><span>Puntos</span></div>`;
+  const bd=$("lvlBadge"); bd.textContent=lvl.label+" · "+lvl.range; bd.style.color=lvl.color; bd.style.background=hexA(lvl.color,.12); bd.style.border="1px solid "+hexA(lvl.color,.4);
+  $("rName").textContent=user.nombre;
+  $("rMode").textContent=lvl.mode; $("rMode").style.color=lvl.color;
+  $("rDesc").textContent=lvl.desc;
+
+  // chips
+  const ch=$("chips"); ch.innerHTML="";
+  DIMS.forEach(d=>{const p=Math.round(dimScore[d.cat]/20*100);const el=document.createElement("span");el.className="chip";el.innerHTML=`<i style="background:${d.color}"></i> ${d.cat} · ${p}%`;ch.appendChild(el);});
+
+  // dim bars
+  const dw=$("dims"); dw.innerHTML="";
+  DIMS.forEach(d=>{
+    const val=dimScore[d.cat], p=Math.round(val/20*100), [lab,lc]=dimLabel(p);
+    const row=document.createElement("div"); row.className="dim-row";
+    row.innerHTML=`<div class="dim-top"><div><span class="dim-name" style="color:${d.color}">${d.cat}</span><span class="dim-lbl" style="color:${lc};background:${hexA(lc,.12)}">${lab}</span></div><div style="text-align:right"><span class="dim-val">${val}/20</span> <span class="dim-pct">${p}%</span></div></div><div class="dim-bar"><div class="dim-fill" style="width:0;background:linear-gradient(90deg,${hexA(d.color,.6)},${d.color})"></div></div>`;
+    dw.appendChild(row);
+    setTimeout(()=>row.querySelector('.dim-fill').style.width=p+"%",100);
+  });
+
+  // recos
+  const rw=$("recos"); rw.innerHTML="";
+  RECOS[lvlKey].forEach(r=>{const el=document.createElement("div");el.className="reco";el.innerHTML=`<div class="ic" style="background:${r.bg}">${r.ic}</div><div><h4>${r.t}</h4><p>${r.d}</p></div>`;rw.appendChild(el);});
+
+  drawRadar(dimScore);
+  saveToSupabase(total, lvl.mode, dimScore, resp);
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+/* RADAR */
+function drawRadar(dimScore){
+  const cv=$("radar"), ctx=cv.getContext("2d");
+  const W=cv.width,H=cv.height,cx=W/2,cy=H/2+6,R=Math.min(W,H)/2-66,N=DIMS.length;
+  ctx.clearRect(0,0,W,H);
+  // grid
+  for(let g=1;g<=4;g++){
+    ctx.beginPath();
+    for(let i=0;i<=N;i++){const a=-Math.PI/2+i*2*Math.PI/N,r=R*g/4;const x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);}
+    ctx.strokeStyle="rgba(122,147,180,.18)";ctx.lineWidth=1;ctx.stroke();
+  }
+  for(let i=0;i<N;i++){const a=-Math.PI/2+i*2*Math.PI/N;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+R*Math.cos(a),cy+R*Math.sin(a));ctx.strokeStyle="rgba(122,147,180,.18)";ctx.stroke();}
+  // shape
+  ctx.beginPath();
+  DIMS.forEach((d,i)=>{const p=dimScore[d.cat]/20,a=-Math.PI/2+i*2*Math.PI/N,r=R*p;const x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+  ctx.closePath();
+  ctx.fillStyle="rgba(0,212,255,.15)";ctx.fill();
+  ctx.strokeStyle="#00d4ff";ctx.lineWidth=2;ctx.stroke();
+  // points + labels
+  DIMS.forEach((d,i)=>{
+    const p=dimScore[d.cat]/20,a=-Math.PI/2+i*2*Math.PI/N,r=R*p;
+    const x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);
+    ctx.beginPath();ctx.arc(x,y,4,0,7);ctx.fillStyle=d.color;ctx.fill();
+    const lx=cx+(R+34)*Math.cos(a),ly=cy+(R+34)*Math.sin(a);
+    ctx.fillStyle="#cdd9ec";ctx.font="11px Segoe UI";ctx.textAlign="center";
+    const words=shortCat(d.cat); words.forEach((w,k)=>ctx.fillText(w,lx,ly+(k*13)-(words.length-1)*6));
+  });
+}
+function shortCat(c){return {"Ecosistema Digital":["Ecosistema","Digital"],"Inteligencia Artificial":["Inteligencia","Artificial"],"Marca y Propuesta de Valor":["Marca y","Propuesta"],"Estrategia Comercial":["Estrategia","Comercial"],"Mentalidad y Crecimiento":["Mentalidad y","Crecimiento"]}[c]||[c];}
+
+/* SUPABASE SAVE */
+function saveToSupabase(total, mode, dimScore, resp){
+  const note=$("saveNote"); note.textContent="Guardando tu resultado…";
+  const payload={
+    nombre:user.nombre, email:user.email||null, telefono:user.tel||null,
+    total, nivel:mode,
+    d_ecosistema:dimScore["Ecosistema Digital"], d_ia:dimScore["Inteligencia Artificial"],
+    d_marca:dimScore["Marca y Propuesta de Valor"], d_estrategia:dimScore["Estrategia Comercial"],
+    d_mentalidad:dimScore["Mentalidad y Crecimiento"],
+    respuestas:resp, meta:{ua:navigator.userAgent, ts:new Date().toISOString()}
+  };
+  fetch(`${SB_URL}/rest/v1/${SB_TABLE}`,{
+    method:"POST",
+    headers:{"apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY,"Content-Type":"application/json","Prefer":"return=minimal"},
+    body:JSON.stringify(payload)
+  }).then(r=>{
+    note.textContent = r.ok ? "✓ Resultado guardado. ¡Nos vemos en el curso NEXTGEN!" : "Tu resultado se muestra abajo (no se pudo guardar online).";
+  }).catch(()=>{ note.textContent="Tu resultado se muestra abajo (sin conexión para guardar)."; });
+}
+
+/* STARS BG */
+(function(){const cv=$("stars");const ctx=cv.getContext("2d");let st=[];function rs(){cv.width=innerWidth;cv.height=innerHeight;st=[];const n=Math.min(90,innerWidth/14);for(let i=0;i<n;i++)st.push({x:Math.random()*cv.width,y:Math.random()*cv.height,r:Math.random()*1.4+.3,a:Math.random(),s:Math.random()*.02+.005});}
+function loop(){ctx.clearRect(0,0,cv.width,cv.height);st.forEach(p=>{p.a+=p.s;const al=.3+Math.abs(Math.sin(p.a))*.6;const col=[' #00d4ff','#7b2fff','#ff8c00'][0];ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,7);ctx.fillStyle=`rgba(0,212,255,${al*.5})`;ctx.fill();});requestAnimationFrame(loop);}
+addEventListener("resize",rs);rs();loop();})();
+</script>
+</body>
+</html>
